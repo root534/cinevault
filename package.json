@@ -1,0 +1,13 @@
+{
+  "name": "cinevault",
+  "version": "1.0.0",
+  "description": "Movie Explorer & Personal Watchlist",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "dotenv": "...",
+    "express": "..."
+  }
+}
