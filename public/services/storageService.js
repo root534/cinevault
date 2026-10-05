@@ -1,10 +1,12 @@
-// Chiave utilizzata per salvare la collezione personale
-const STORAGE_KEY = 'cinevault-collection';
+const FAVORITES_KEY = 'cinevault_favorites';
+const WATCHLIST_KEY = 'cinevault_watchlist';
+const WATCHED_KEY = 'cinevault_watched';
+const RATINGS_KEY = 'cinevault_ratings';
 
-// Funzione per ottenere la collezione dal localStorage
-export function getCollection() {
+// ---------- GENERIC ----------
 
-    const data = localStorage.getItem(STORAGE_KEY);
+function getArray(key) {
+    const data = localStorage.getItem(key);
 
     if (!data) {
         return [];
@@ -13,61 +15,165 @@ export function getCollection() {
     return JSON.parse(data);
 }
 
-// Funzione per ottenere un film specifico dalla collezione
-export function getCollectionItem(movieId) {
-
-    const collection = getCollection();
-
-    return collection.find(
-        item => item.id === movieId
-    );
-}
-
-// Funzione per rimuovere un film dalla collezione
-export function removeFromCollection(movieId) {
-
-    const collection = getCollection();
-
-    const updatedCollection = collection.filter(
-        item => item.id !== movieId
-    );
-
-    saveCollection(updatedCollection);
-
-    return updatedCollection;
-}
-
-// Funzione per salvare la collezione nel localStorage
-export function saveCollection(collection) {
-
+function saveArray(key, data) {
     localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(collection)
+        key,
+        JSON.stringify(data)
     );
 }
 
-// Funzione per aggiungere un film alla collezione
-export function addToCollection(movie) {
+// ---------- FAVORITES ----------
 
-    const collection = getCollection();
+export function getFavorites() {
+    return getArray(FAVORITES_KEY);
+}
 
-    const alreadyExists = collection.some(
-        item => item.id === movie.id
-    );
+export function addToFavorites(movieId) {
+    const favorites = getFavorites();
 
-    if (alreadyExists) {
-        return collection;
+    if (!favorites.includes(movieId)) {
+        favorites.push(movieId);
+        saveArray(FAVORITES_KEY, favorites);
     }
 
-    collection.push(movie);
+    return favorites;
+}
 
-    saveCollection(collection);
+export function removeFromFavorites(movieId) {
+    const favorites = getFavorites();
+
+    const updatedFavorites = favorites.filter(
+        id => id !== movieId
+    );
+
+    saveArray(FAVORITES_KEY, updatedFavorites);
+
+    return updatedFavorites;
+}
+
+// ---------- WATCHLIST ----------
+
+export function getWatchlist() {
+    return getArray(WATCHLIST_KEY);
+}
+
+export function addToWatchlist(movieId) {
+    const watchlist = getWatchlist();
+
+    if (!watchlist.includes(movieId)) {
+        watchlist.push(movieId);
+        saveArray(WATCHLIST_KEY, watchlist);
+    }
+
+    return watchlist;
+}
+
+export function removeFromWatchlist(movieId) {
+    const watchlist = getWatchlist();
+
+    const updatedWatchlist = watchlist.filter(
+        id => id !== movieId
+    );
+
+    saveArray(WATCHLIST_KEY, updatedWatchlist);
+
+    return updatedWatchlist;
+}
+
+// ---------- WATCHED ----------
+
+export function getWatched() {
+    return getArray(WATCHED_KEY);
+}
+
+export function addToWatched(movieId) {
+    const watched = getWatched();
+
+    if (!watched.includes(movieId)) {
+        watched.push(movieId);
+        saveArray(WATCHED_KEY, watched);
+    }
+
+    return watched;
+}
+
+export function removeFromWatched(movieId) {
+    const watched = getWatched();
+
+    const updatedWatched = watched.filter(
+        id => id !== movieId
+    );
+
+    saveArray(WATCHED_KEY, updatedWatched);
+
+    return updatedWatched;
+}
+
+// ---------- RATINGS ----------
+
+export function getRatings() {
+    const data = localStorage.getItem(RATINGS_KEY);
+
+    if (!data) {
+        return {};
+    }
+
+    return JSON.parse(data);
+}
+
+export function setRating(movieId, rating) {
+    const ratings = getRatings();
+
+    ratings[movieId] = rating;
+
+    localStorage.setItem(
+        RATINGS_KEY,
+        JSON.stringify(ratings)
+    );
+
+    return ratings;
+}
+
+export function removeRating(movieId) {
+    const ratings = getRatings();
+
+    delete ratings[movieId];
+
+    localStorage.setItem(
+        RATINGS_KEY,
+        JSON.stringify(ratings)
+    );
+
+    return ratings;
+}
+
+// ---------- VECCHIA COLLEZIONE ----------
+
+const COLLECTION_KEY = 'cinevault_collection';
+
+export function getCollection() {
+    return getArray(COLLECTION_KEY);
+}
+
+export function addToCollection(movie) {
+    const collection = getCollection();
+
+    if (!collection.some(item => item.id === movie.id)) {
+        collection.push(movie);
+        saveArray(COLLECTION_KEY, collection);
+    }
 
     return collection;
 }
 
-// Funzione per rimuovere la collezione dal localStorage
-export function clearCollection() {
+export function removeFromCollection(movieId) {
+    const collection = getCollection();
 
-    localStorage.removeItem(STORAGE_KEY);
+    const updatedCollection = collection.filter(
+        movie => movie.id !== movieId
+    );
+
+    saveArray(COLLECTION_KEY, updatedCollection);
+
+    return updatedCollection;
 }

@@ -2,13 +2,18 @@
    Base
    ============================== */
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
 
     margin: 0;
     padding: 20px;
 
-    box-sizing: border-box;
+    background: #fff;
+    color: #222;
 }
 
 
@@ -25,7 +30,7 @@ body {
 
     width: 100%;
 
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 #search-bar {
@@ -40,12 +45,15 @@ body {
     width: 100%;
 }
 
-/* Pulsante "La mia collezione" */
+
+/* ==============================
+   Pulsante collezione
+   ============================== */
 
 #collection-button {
     flex-shrink: 0;
 
-    padding: 10px 16px;
+    padding: 9px 14px;
 
     border: 1px solid #444;
     border-radius: 6px;
@@ -55,7 +63,7 @@ body {
 
     cursor: pointer;
 
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #collection-button:hover {
@@ -63,18 +71,20 @@ body {
 }
 
 
-/* Campo di ricerca */
+/* ==============================
+   Campo ricerca
+   ============================== */
 
 #search-input {
-    width: 400px;
+    width: 380px;
     max-width: 45vw;
 
-    padding: 10px 14px;
+    padding: 9px 13px;
 
     border: 1px solid #bbb;
     border-radius: 6px;
 
-    font-size: 16px;
+    font-size: 15px;
 
     box-sizing: border-box;
 }
@@ -85,12 +95,14 @@ body {
 }
 
 
-/* Pulsante Cerca */
+/* ==============================
+   Pulsante cerca
+   ============================== */
 
 #search-button {
     flex-shrink: 0;
 
-    padding: 10px 16px;
+    padding: 9px 14px;
 
     border: 1px solid #444;
     border-radius: 6px;
@@ -100,7 +112,7 @@ body {
 
     cursor: pointer;
 
-    font-size: 16px;
+    font-size: 15px;
 }
 
 #search-button:hover {
@@ -117,7 +129,7 @@ body {
 
     top: calc(100% + 5px);
 
-    width: 400px;
+    width: 380px;
     max-width: 100%;
 
     display: flex;
@@ -131,6 +143,8 @@ body {
     overflow: hidden;
 
     z-index: 200;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 #search-results:empty {
@@ -142,7 +156,7 @@ body {
 
     width: 100%;
 
-    padding: 10px 12px;
+    padding: 9px 12px;
 
     border: none;
 
@@ -155,17 +169,13 @@ body {
     font-size: 14px;
 }
 
-#search-results button:hover {
-    background: #f2f2f2;
-}
-
-#search-results button.active {
+#search-results button:hover,
+#search-results button:focus {
     background: #e9e9e9;
 }
 
 #search-results button:focus {
     outline: none;
-    background: #e9e9e9;
 }
 
 .no-results {
@@ -184,7 +194,7 @@ body {
 
 
 /* ==============================
-   Griglia film
+   Griglia film principale
    ============================== */
 
 #movies-container {
@@ -193,12 +203,25 @@ body {
     grid-template-columns:
         repeat(10, minmax(0, 1fr));
 
-    gap: 20px;
+    gap: 16px;
 
     width: 100%;
     max-width: 1900px;
 
     margin: 0 auto;
+}
+
+
+/* ==============================
+   Titolo sezione film
+   ============================== */
+
+#movies-section h2 {
+    margin: 0 0 20px;
+
+    text-align: center;
+
+    font-size: 28px;
 }
 
 
@@ -210,6 +233,9 @@ body {
     width: 100%;
     min-width: 0;
 
+    display: flex;
+    flex-direction: column;
+
     border: 1px solid #ddd;
     border-radius: 8px;
 
@@ -218,54 +244,133 @@ body {
     background: white;
 }
 
-.poster-container {
+
+/* ==============================
+   Poster card
+   ============================== */
+
+.movie-card .poster-container {
     width: 100%;
-    height: 220px;
+    height: 205px;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    flex-shrink: 0;
 }
 
-.poster-container img {
-    width: 100px;
-    height: 150px;
+.movie-card .poster-container img {
+    width: 95px;
+    height: 142px;
 
     object-fit: contain;
 }
 
-.movie-info {
-    height: 170px;
 
-    padding: 10px;
+/* ==============================
+   Informazioni card
+   ============================== */
 
-    box-sizing: border-box;
+.movie-card .movie-info {
+    min-height: 195px;
+
+    padding: 9px;
 
     display: flex;
     flex-direction: column;
+
+    box-sizing: border-box;
 }
 
-.movie-info h3 {
-    margin: 0 0 10px;
+.movie-card .movie-info h3 {
+    margin: 0 0 7px;
 
-    height: 48px;
+    height: 42px;
 
     overflow: hidden;
+
+    font-size: 17px;
+    line-height: 1.25;
 }
 
-.movie-info p {
-    margin: 5px 0;
+.movie-card .movie-info p {
+    margin: 4px 0;
+
+    font-size: 14px;
+    line-height: 1.3;
 }
 
 
 /* ==============================
-   Pulsante dettaglio
+   Azioni rapide card
    ============================== */
 
-.movie-card button {
-    margin-top: auto;
+.movie-actions {
+    display: flex;
 
-    padding: 8px 14px;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 6px;
+
+    width: 100%;
+
+    margin-top: auto;
+}
+
+.favorite-button,
+.watchlist-button,
+.watched-button {
+    display: inline-flex !important;
+
+    flex: 0 0 36px;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 36px !important;
+    min-width: 36px !important;
+
+    height: 32px;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    background: #444;
+    color: white;
+
+    font-size: 16px;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.favorite-button:hover,
+.watchlist-button:hover,
+.watched-button:hover {
+    background: #222;
+}
+
+
+/* ==============================
+   Pulsante dettaglio card
+   ============================== */
+
+.movie-card .movie-info > button:not(
+    .favorite-button
+):not(
+    .watchlist-button
+):not(
+    .watched-button
+) {
+    margin-top: 8px;
+
+    padding: 7px 12px;
 
     border: 1px solid #444;
     border-radius: 6px;
@@ -275,10 +380,10 @@ body {
 
     cursor: pointer;
 
-    font-size: 14px;
+    font-size: 13px;
 }
 
-.movie-card button:hover {
+.movie-card .movie-info > button:hover {
     background: #222;
 }
 
@@ -295,12 +400,12 @@ body {
 
     gap: 8px;
 
-    margin-top: 25px;
-    padding: 15px 0;
+    margin-top: 20px;
+    padding: 12px 0;
 }
 
 #pagination button {
-    padding: 8px 14px;
+    padding: 7px 12px;
 
     border: 1px solid #444;
     border-radius: 6px;
@@ -310,7 +415,7 @@ body {
 
     cursor: pointer;
 
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #pagination button:hover:not(:disabled) {
@@ -327,9 +432,9 @@ body {
 }
 
 #pagination span {
-    padding: 8px 12px;
+    padding: 7px 10px;
 
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
 }
 
@@ -341,7 +446,9 @@ body {
 #movie-detail {
     display: none;
 
-    margin-top: 40px;
+    width: 100%;
+
+    margin-top: 35px;
 }
 
 .movie-detail {
@@ -362,6 +469,10 @@ body {
     height: 375px;
 
     flex-shrink: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .movie-detail .poster-container img {
@@ -373,10 +484,14 @@ body {
 
 .movie-detail-info {
     flex: 1;
+
+    min-width: 0;
 }
 
 .movie-detail-info h2 {
     margin-top: 0;
+
+    font-size: 28px;
 }
 
 .movie-detail-info p {
@@ -384,6 +499,11 @@ body {
 
     line-height: 1.5;
 }
+
+
+/* ==============================
+   Pulsante indietro dettaglio
+   ============================== */
 
 #back-to-detail {
     margin-bottom: 15px;
@@ -402,6 +522,11 @@ body {
 #back-to-detail:hover {
     background: #222;
 }
+
+
+/* ==============================
+   Collezione - pulsante aggiunta
+   ============================== */
 
 #add-to-collection {
     margin-top: 15px;
@@ -430,6 +555,73 @@ body {
     cursor: default;
 }
 
+
+/* ==============================
+   Valutazione personale
+   ============================== */
+
+.personal-rating {
+    display: flex;
+
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin: 15px 0;
+}
+
+.personal-rating label {
+    margin-right: 2px;
+}
+
+#personal-rating-input {
+    width: 70px;
+
+    padding: 8px 9px;
+
+    border: 1px solid #bbb;
+    border-radius: 6px;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+#personal-rating-input:focus {
+    outline: none;
+    border-color: #444;
+}
+
+#save-personal-rating,
+#remove-personal-rating {
+    padding: 8px 14px;
+
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    background: #444;
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+#save-personal-rating:hover,
+#remove-personal-rating:hover:not(:disabled) {
+    background: #222;
+}
+
+#save-personal-rating:disabled,
+#remove-personal-rating:disabled {
+    background: #ddd;
+    color: #777;
+
+    border-color: #ddd;
+
+    cursor: not-allowed;
+}
 
 /* ==============================
    Collezione
@@ -494,7 +686,8 @@ body {
 
     overflow: hidden;
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .collection-card .poster-container {
@@ -518,6 +711,8 @@ body {
 .collection-card .movie-info {
     flex: 1;
 
+    min-height: 220px;
+
     height: auto;
 
     padding: 20px;
@@ -540,14 +735,64 @@ body {
     font-size: 15px;
 }
 
-.collection-card .movie-info button {
-    width: auto;
 
-    margin-top: 10px;
+/* ==============================
+   Descrizione collezione
+   ============================== */
+
+.collection-overview {
+    margin-top: 12px !important;
+
+    line-height: 1.5;
+
+    color: #555;
 }
 
-.collection-card .movie-info button + button {
-    margin-top: 8px;
+
+/* ==============================
+   Pulsanti collezione
+   ============================== */
+
+.collection-actions {
+    display: flex;
+
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+.collection-actions button {
+    margin: 0 !important;
+
+    padding: 8px 14px;
+
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    background: #444;
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.collection-actions button:hover {
+    background: #222;
+}
+
+.collection-actions .remove-from-collection {
+    background: white;
+    color: #444;
+}
+
+.collection-actions .remove-from-collection:hover {
+    background: #f2f2f2;
 }
 
 
@@ -556,8 +801,8 @@ body {
    ============================== */
 
 #filter-toggle {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
 
     flex-shrink: 0;
 
@@ -569,7 +814,7 @@ body {
 
     cursor: pointer;
 
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1;
 }
 
@@ -594,7 +839,8 @@ body {
 
     background: white;
 
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.15);
 
     box-sizing: border-box;
 
@@ -620,6 +866,8 @@ body {
 }
 
 .filter-group input {
+    width: 100%;
+
     padding: 9px 10px;
 
     border: 1px solid #bbb;
@@ -657,7 +905,7 @@ body {
 
 
 /* ==============================
-   Responsive
+   Responsive - tablet grande
    ============================== */
 
 @media (max-width: 1600px) {
@@ -669,6 +917,10 @@ body {
 }
 
 
+/* ==============================
+   Responsive - tablet
+   ============================== */
+
 @media (max-width: 1300px) {
 
     #movies-container {
@@ -678,6 +930,10 @@ body {
 }
 
 
+/* ==============================
+   Responsive - tablet piccolo
+   ============================== */
+
 @media (max-width: 900px) {
 
     #movies-container {
@@ -685,17 +941,17 @@ body {
             repeat(4, minmax(0, 1fr));
     }
 
-    .poster-container {
+    .movie-card .poster-container {
         height: 200px;
     }
 
-    .poster-container img {
+    .movie-card .poster-container img {
         width: 90px;
         height: 135px;
     }
 
-    .movie-info {
-        height: 160px;
+    .movie-card .movie-info {
+        min-height: 190px;
     }
 
     .movie-detail {
@@ -709,6 +965,10 @@ body {
     }
 }
 
+
+/* ==============================
+   Responsive - mobile
+   ============================== */
 
 @media (max-width: 600px) {
 
@@ -749,6 +1009,10 @@ body {
         width: 100%;
     }
 
+    #movies-section h2 {
+        font-size: 24px;
+    }
+
     #movies-container {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
@@ -756,29 +1020,41 @@ body {
         gap: 12px;
     }
 
-    .poster-container {
+    .movie-card .poster-container {
         height: 180px;
     }
 
-    .poster-container img {
+    .movie-card .poster-container img {
         width: 80px;
         height: 120px;
     }
 
-    .movie-info {
-        height: 155px;
+    .movie-card .movie-info {
+        min-height: 175px;
+
         padding: 8px;
     }
 
-    .movie-info h3 {
+    .movie-card .movie-info h3 {
         font-size: 16px;
     }
 
-    .movie-info p {
+    .movie-card .movie-info p {
         font-size: 14px;
     }
 
-    .movie-card button {
+    .movie-card .movie-actions {
+        gap: 4px;
+    }
+
+    .movie-card .movie-actions button {
+        width: 34px !important;
+        min-width: 34px !important;
+
+        height: 30px;
+    }
+
+    .movie-card .movie-info > button {
         width: 100%;
     }
 
@@ -803,6 +1079,10 @@ body {
         height: 300px;
     }
 
+    .personal-rating {
+        align-items: center;
+    }
+
     .collection-card {
         flex-direction: column;
     }
@@ -812,10 +1092,16 @@ body {
     }
 
     .collection-card .movie-info {
+        min-height: auto;
+
         padding: 15px;
     }
 }
 
+
+/* ==============================
+   Responsive - mobile piccolo
+   ============================== */
 
 @media (max-width: 400px) {
 
@@ -829,123 +1115,8 @@ body {
         margin: 0 auto;
     }
 
-    .poster-container {
+    .movie-card .poster-container {
         height: 220px;
     }
-}
-
-
-/* ==============================
-   Card collezione
-   ============================== */
-
-.collection-card {
-    display: flex;
-
-    min-height: 220px;
-
-    border: 1px solid #ddd;
-    border-radius: 10px;
-
-    background: white;
-
-    overflow: hidden;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.collection-card .poster-container {
-    width: 150px;
-    height: 220px;
-
-    flex-shrink: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.collection-card .poster-container img {
-    width: 130px;
-    height: 195px;
-
-    object-fit: contain;
-}
-
-.collection-card .movie-info {
-    flex: 1;
-
-    height: auto;
-
-    padding: 20px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.collection-card .movie-info h3 {
-    height: auto;
-
-    margin: 0 0 10px;
-
-    font-size: 22px;
-}
-
-.collection-card .movie-info p {
-    margin: 6px 0;
-
-    font-size: 15px;
-}
-
-/* Descrizione */
-
-.collection-overview {
-    margin-top: 12px !important;
-
-    line-height: 1.5;
-
-    color: #555;
-}
-
-
-/* Pulsanti della collezione */
-
-.collection-actions {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-top: auto;
-    padding-top: 15px;
-}
-
-.collection-actions button {
-    margin: 0 !important;
-
-    padding: 8px 14px;
-
-    border: 1px solid #444;
-    border-radius: 6px;
-
-    background: #444;
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 14px;
-}
-
-.collection-actions button:hover {
-    background: #222;
-}
-
-.collection-actions .remove-from-collection {
-    background: white;
-    color: #444;
-}
-
-.collection-actions .remove-from-collection:hover {
-    background: #f2f2f2;
 }
 

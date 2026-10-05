@@ -44,7 +44,7 @@ export function validateId(req, res, next) {
 export function validateDiscover(req, res, next) {
     const { year, minRating } = req.query;
 
-    if (!year || !Number.isInteger(Number(year))) {
+    if (year && !Number.isInteger(Number(year))) {
         const error = new Error(
             'Il parametro year deve essere numerico'
         );
@@ -54,10 +54,12 @@ export function validateDiscover(req, res, next) {
     }
 
     if (
-        minRating === undefined ||
-        Number.isNaN(Number(minRating)) ||
-        Number(minRating) < 0 ||
-        Number(minRating) > 10
+        minRating !== undefined &&
+        (
+            Number.isNaN(Number(minRating)) ||
+            Number(minRating) < 0 ||
+            Number(minRating) > 10
+        )
     ) {
         const error = new Error(
             'Il parametro minRating deve essere compreso tra 0 e 10'

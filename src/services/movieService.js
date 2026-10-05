@@ -66,6 +66,13 @@ export async function getMovieDetails(id) {
 }
 
 export async function discoverMovies(year, minRating, page = 1) {
+   
+    console.log('[BE] discover values:', {
+        year: year ? Number(year) : undefined,
+        minRating: minRating ? Number(minRating) : undefined,
+        page: Number(page)
+    });
+
     const data = await fetchDiscoverMovies({
         primary_release_year: year,
         'vote_average.gte': minRating,

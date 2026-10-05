@@ -60,11 +60,20 @@ export async function discoverMoviesController(req, res, next) {
     try {
         const { year, minRating, page = 1 } = req.query;
 
+
+        console.log('[BE] discover query:', {
+                                            year,
+                                            minRating,
+                                            page
+                                        });
+
+
+                                        
         const movies = await discoverMovies(
-            Number(year),
-            Number(minRating),
-            Number(page)
-        );
+                            year ? Number(year) : undefined,
+                            minRating ? Number(minRating) : undefined,
+                            Number(page)
+                        );
 
         res.json(movies);
     } catch (error) {

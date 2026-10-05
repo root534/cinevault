@@ -1,8 +1,21 @@
 import {
     getCollection,
     addToCollection,
-    removeFromCollection    
+    removeFromCollection,
+    getFavorites,
+    addToFavorites,
+    removeFromFavorites,
+    getWatchlist,
+    addToWatchlist,
+    removeFromWatchlist,
+    getWatched,
+    addToWatched,
+    removeFromWatched,
+    getRatings,
+    setRating,
+    removeRating
 } from './services/storageService.js';
+
 
 const moviesContainer = document.getElementById('movies-container');
 const movieDetail = document.getElementById('movie-detail');
@@ -13,20 +26,33 @@ const searchResults = document.getElementById('search-results');
 
 const moviesSection = document.getElementById('movies-section');
 const pagination = document.getElementById('pagination');
-const moviesTitle = document.querySelector('#movies-section h2');
+const moviesTitle =
+    document.querySelector('#movies-section h2');
 
 // Elementi per la gestione dei filtri
-const filterToggle = document.querySelector('#filter-toggle');
-const movieFilters = document.querySelector('#movie-filters');
-const filterButton = document.querySelector('#filter-button');
+const filterToggle =
+    document.querySelector('#filter-toggle');
+
+const movieFilters =
+    document.querySelector('#movie-filters');
+
+const filterButton =
+    document.querySelector('#filter-button');
 
 // Elementi per la gestione della collezione
-const collectionButton = document.getElementById('collection-button');
-const collectionSection = document.getElementById('collection-section');
-const collectionContainer = document.getElementById('collection-container');
+const collectionButton =
+    document.getElementById('collection-button');
+
+const collectionSection =
+    document.getElementById('collection-section');
+
+const collectionContainer =
+    document.getElementById('collection-container');
 
 const backToMoviesFromCollection =
-    document.getElementById('back-to-movies-from-collection');
+    document.getElementById(
+        'back-to-movies-from-collection'
+    );
 
 
 // ============================================================
@@ -47,14 +73,34 @@ let currentFilters = {
 
 
 // ============================================================
+// UTILITY UI
+// ============================================================
+
+function closeSearchSuggestions() {
+    searchResults.innerHTML = '';
+}
+
+function closeFilterPanel() {
+    movieFilters.classList.remove('open');
+    filterToggle.setAttribute('aria-expanded', 'false');
+}
+
+
+// ============================================================
 // NAVIGAZIONE
 // ============================================================
 
 // Torna dalla collezione alla lista dei film
-backToMoviesFromCollection.addEventListener('click', showMovies);
+backToMoviesFromCollection.addEventListener(
+    'click',
+    showMovies
+);
 
 // Mostra la collezione
-collectionButton.addEventListener('click', showCollection);
+collectionButton.addEventListener(
+    'click',
+    showCollection
+);
 
 
 // ============================================================
@@ -62,47 +108,59 @@ collectionButton.addEventListener('click', showCollection);
 // ============================================================
 
 // Mostra / nasconde il pannello dei filtri
-filterToggle.addEventListener('click', () => {
+filterToggle.addEventListener(
+    'click',
+    () => {
 
-    const isOpen = movieFilters.classList.toggle('open');
+        const isOpen =
+            movieFilters.classList.toggle('open');
 
-    filterToggle.setAttribute(
-        'aria-expanded',
-        isOpen
-    );
-});
+        filterToggle.setAttribute(
+            'aria-expanded',
+            isOpen
+        );
+    }
+);
 
 
 // Applica i filtri
-filterButton.addEventListener('click', () => {
+filterButton.addEventListener(
+    'click',
+    () => {
 
-    const year = document.getElementById('filter-year').value;
-    const minRating = document.getElementById('filter-rating').value;
+        const year =
+            document.getElementById(
+                'filter-year'
+            ).value;
 
-    currentFilters.year = year;
-    currentFilters.minRating = minRating;
+        const minRating =
+            document.getElementById(
+                'filter-rating'
+            ).value;
 
-    // Quando applichiamo un filtro,
-    // usciamo dalla modalità ricerca
-    currentSearchQuery = '';
-    searchInput.value = '';
-    searchResults.innerHTML = '';
+        currentFilters.year = year;
+        currentFilters.minRating = minRating;
 
-    currentPage = 1;
+        // Quando applichiamo un filtro,
+        // usciamo dalla modalità ricerca
+        currentSearchQuery = '';
 
-    movieFilters.classList.remove('open');
+        searchInput.value = '';
+        searchResults.innerHTML = '';
 
-    filterToggle.setAttribute(
-        'aria-expanded',
-        'false'
-    );
+        currentPage = 1;
 
-    moviesTitle.textContent = 'Film filtrati';
+        closeFilterPanel();
+        closeSearchSuggestions();
 
-    showMovies();
+        moviesTitle.textContent =
+            'Film filtrati';
 
-    loadMoviesPage();
-});
+        showMovies();
+
+        loadMoviesPage();
+    }
+);
 
 
 // ============================================================
@@ -116,6 +174,7 @@ async function getPopularMovies(page = 1) {
     );
 
     if (!response.ok) {
+
         throw new Error(
             'Errore nel caricamento dei film'
         );
@@ -129,13 +188,17 @@ async function getPopularMovies(page = 1) {
 // API - RICERCA
 // ============================================================
 
-async function searchMovies(query, page = 1) {
+async function searchMovies(
+    query,
+    page = 1
+) {
 
     const response = await fetch(
         `/api/movies/search?query=${encodeURIComponent(query)}&page=${page}`
     );
 
     if (!response.ok) {
+
         throw new Error(
             'Errore nella ricerca dei film'
         );
@@ -159,21 +222,33 @@ async function discoverMovies(
 
     // Il filtro anno è opzionale
     if (year) {
-        params.set('year', year);
+
+        params.set(
+            'year',
+            year
+        );
     }
 
     // Il filtro rating è opzionale
     if (minRating) {
-        params.set('minRating', minRating);
+
+        params.set(
+            'minRating',
+            minRating
+        );
     }
 
-    params.set('page', page);
+    params.set(
+        'page',
+        page
+    );
 
     const response = await fetch(
         `/api/movies/discover?${params.toString()}`
     );
 
     if (!response.ok) {
+
         throw new Error(
             'Errore nel caricamento dei film filtrati'
         );
@@ -189,13 +264,12 @@ async function discoverMovies(
 
 async function getMovieDetails(id) {
 
-    console.log('[FE SERVICE] GET /api/movies/' + id);
-
     const response = await fetch(
         `/api/movies/${id}`
     );
 
     if (!response.ok) {
+
         throw new Error(
             'Errore nel caricamento del dettaglio'
         );
@@ -246,10 +320,20 @@ async function loadMoviesPage() {
         currentPage = data.page;
         totalPages = data.totalPages;
 
-        console.log('Pagina:', currentPage);
-        console.log('Totale pagine:', totalPages);
+        console.log(
+            'Pagina:',
+            currentPage
+        );
 
-        renderMovies(data.results);
+        console.log(
+            'Totale pagine:',
+            totalPages
+        );
+
+        renderMovies(
+            data.results
+        );
+
         renderPagination();
 
         return data;
@@ -257,6 +341,8 @@ async function loadMoviesPage() {
     } catch (error) {
 
         console.error(error);
+
+        pagination.style.display = 'none';
 
         moviesContainer.innerHTML = `
             <div class="no-results">
@@ -275,12 +361,14 @@ function renderMovies(movies) {
 
     moviesContainer.innerHTML = '';
 
-    movies.forEach(movie => {
+    movies.forEach(
+        movie => {
 
-        moviesContainer.appendChild(
-            renderMovieCard(movie)
-        );
-    });
+            moviesContainer.appendChild(
+                renderMovieCard(movie)
+            );
+        }
+    );
 }
 
 
@@ -290,13 +378,25 @@ function renderMovies(movies) {
 
 function renderMovieCard(movie) {
 
-    const card = document.createElement('article');
+    const card =
+        document.createElement('article');
 
-    card.classList.add('movie-card');
+    card.classList.add(
+        'movie-card'
+    );
 
     const posterUrl = movie.poster
         ? `https://image.tmdb.org/t/p/w500${movie.poster}`
         : null;
+
+    const isFavorite =
+        getFavorites().includes(movie.id);
+
+    const inWatchlist =
+        getWatchlist().includes(movie.id);
+
+    const isWatched =
+        getWatched().includes(movie.id);
 
     card.innerHTML = `
         <div class="poster-container">
@@ -337,8 +437,153 @@ function renderMovieCard(movie) {
                 Dettagli
             </button>
 
+            <div class="movie-actions">
+
+                <button
+                    type="button"
+                    class="favorite-button"
+                    title="Preferito"
+                >
+                    ${isFavorite ? '★' : '☆'}
+                </button>
+
+                <button
+                    type="button"
+                    class="watchlist-button"
+                    title="Watchlist"
+                >
+                    ${inWatchlist ? '✓' : '＋'}
+                </button>
+
+                <button
+                    type="button"
+                    class="watched-button"
+                    title="Segna come visto"
+                >
+                    ${isWatched ? '✓' : '○'}
+                </button>
+
+            </div>
+
         </div>
     `;
+
+    const favoriteButton =
+        card.querySelector(
+            '.favorite-button'
+        );
+
+    const watchlistButton =
+        card.querySelector(
+            '.watchlist-button'
+        );
+
+    const watchedButton =
+        card.querySelector(
+            '.watched-button'
+        );
+
+
+    // ========================================================
+    // PREFERITO
+    // ========================================================
+
+    favoriteButton.addEventListener(
+        'click',
+        event => {
+
+            event.stopPropagation();
+
+            if (
+                getFavorites().includes(movie.id)
+            ) {
+
+                removeFromFavorites(
+                    movie.id
+                );
+
+                favoriteButton.textContent =
+                    '☆';
+
+            } else {
+
+                addToFavorites(
+                    movie.id
+                );
+
+                favoriteButton.textContent =
+                    '★';
+            }
+        }
+    );
+
+
+    // ========================================================
+    // WATCHLIST
+    // ========================================================
+
+    watchlistButton.addEventListener(
+        'click',
+        event => {
+
+            event.stopPropagation();
+
+            if (
+                getWatchlist().includes(movie.id)
+            ) {
+
+                removeFromWatchlist(
+                    movie.id
+                );
+
+                watchlistButton.textContent =
+                    '＋';
+
+            } else {
+
+                addToWatchlist(
+                    movie.id
+                );
+
+                watchlistButton.textContent =
+                    '✓';
+            }
+        }
+    );
+
+
+    // ========================================================
+    // FILM VISTO
+    // ========================================================
+
+    watchedButton.addEventListener(
+        'click',
+        event => {
+
+            event.stopPropagation();
+
+            if (
+                getWatched().includes(movie.id)
+            ) {
+
+                removeFromWatched(
+                    movie.id
+                );
+
+                watchedButton.textContent =
+                    '○';
+
+            } else {
+
+                addToWatched(
+                    movie.id
+                );
+
+                watchedButton.textContent =
+                    '✓';
+            }
+        }
+    );
 
     return card;
 }
@@ -353,8 +598,11 @@ function renderPagination() {
     pagination.innerHTML = '';
 
     if (totalPages <= 1) {
+        pagination.style.display = 'none';
         return;
     }
+
+    pagination.style.display = 'flex';
 
     pagination.innerHTML = `
         <button
@@ -397,36 +645,52 @@ function renderPagination() {
 
 
 // Gestione click sulla paginazione
-pagination.addEventListener('click', event => {
+pagination.addEventListener(
+    'click',
+    event => {
 
-    if (!event.target.matches('button')) {
-        return;
+        if (
+            !event.target.matches('button')
+        ) {
+            return;
+        }
+
+        const buttonId =
+            event.target.id;
+
+        if (
+            buttonId === 'first-page'
+        ) {
+
+            currentPage = 1;
+        }
+
+        if (
+            buttonId === 'previous-page'
+        ) {
+
+            currentPage--;
+        }
+
+        if (
+            buttonId === 'next-page'
+        ) {
+
+            currentPage++;
+        }
+
+        if (
+            buttonId === 'last-page'
+        ) {
+
+            currentPage = totalPages;
+        }
+
+        showMovies();
+
+        loadMoviesPage();
     }
-
-    const buttonId = event.target.id;
-
-    if (buttonId === 'first-page') {
-        currentPage = 1;
-    }
-
-    if (buttonId === 'previous-page') {
-        currentPage--;
-    }
-
-    if (buttonId === 'next-page') {
-        currentPage++;
-    }
-
-    if (buttonId === 'last-page') {
-        currentPage = totalPages;
-    }
-
-    // Se eravamo nel dettaglio,
-    // torniamo alla lista prima di caricare la nuova pagina
-    showMovies();
-
-    loadMoviesPage();
-});
+);
 
 
 // ============================================================
@@ -434,14 +698,24 @@ pagination.addEventListener('click', event => {
 // ============================================================
 
 moviesContainer.addEventListener(
-    'click', event => {
-            openMovieDetail(event,false);
+    'click',
+    event => {
+
+        openMovieDetail(
+            event,
+            false
+        );
     }
 );
 
 collectionContainer.addEventListener(
-    'click', event => { 
-        openMovieDetail(event,true);
+    'click',
+    event => {
+
+        openMovieDetail(
+            event,
+            true
+        );
     }
 );
 
@@ -454,35 +728,38 @@ searchButton.addEventListener(
     'click',
     async () => {
 
-        const query = searchInput.value.trim();
+        const query =
+            searchInput.value.trim();
 
-        // Se il campo è vuoto non eseguiamo la ricerca
+        // Se il campo è vuoto
+        // non eseguiamo la ricerca
         if (!query) {
             return;
         }
 
-        console.log('RICERCA PREMUTA:', query);
+        console.log(
+            'RICERCA PREMUTA:',
+            query
+        );
 
-        // Imposta la ricerca corrente
-        currentSearchQuery = query;
+        currentSearchQuery =
+            query;
 
-        // La ricerca annulla eventuali filtri precedenti
+        // La ricerca annulla
+        // eventuali filtri precedenti
         currentFilters.year = '';
         currentFilters.minRating = '';
 
-        // Riparte dalla prima pagina
         currentPage = 1;
 
-        // Titolo della lista durante la ricerca
-        moviesTitle.textContent = 'Film';
+        moviesTitle.textContent =
+            'Film';
 
-        // Chiude eventuali suggerimenti
-        searchResults.innerHTML = '';
+        searchResults.innerHTML =
+            '';
 
-        // Mostra la lista dei film
         showMovies();
 
-        // Esegue la ricerca
         await loadMoviesPage();
     }
 );
@@ -496,17 +773,23 @@ searchInput.addEventListener(
     'input',
     () => {
 
-        const query = searchInput.value.trim();
+        const query =
+            searchInput.value.trim();
 
-        clearTimeout(searchTimeout);
+        clearTimeout(
+            searchTimeout
+        );
 
         if (!query) {
 
-            currentSearchQuery = '';
+            currentSearchQuery =
+                '';
 
-            searchResults.innerHTML = '';
+            searchResults.innerHTML =
+                '';
 
-            moviesTitle.textContent = 'Film popolari';
+            moviesTitle.textContent =
+                'Film popolari';
 
             currentPage = 1;
 
@@ -517,57 +800,79 @@ searchInput.addEventListener(
             return;
         }
 
-        currentSearchQuery = query;
+        currentSearchQuery =
+            query;
 
         currentFilters.year = '';
         currentFilters.minRating = '';
 
         currentPage = 1;
 
-        moviesTitle.textContent = 'Film';
+        moviesTitle.textContent =
+            'Film';
 
-        searchTimeout = setTimeout(
-            async () => {
+        searchTimeout =
+            setTimeout(
+                async () => {
 
-                try {
+                    try {
 
-                    const data =
-                        await loadMoviesPage();
+                        showMovies();
 
-                    searchResults.innerHTML = '';
+                        const data =
+                            await loadMoviesPage();
 
-                    if (!data || data.results.length === 0) {
-                        moviesContainer.innerHTML = `
-                            <div class="no-results">
-                                Nessun risultato trovato
-                            </div>
-                        `;
+                        searchResults.innerHTML =
+                            '';
 
-                        return;
+                        if (
+                            !data ||
+                            data.results.length === 0
+                        ) {
+
+                            moviesContainer.innerHTML = `
+                                <div class="no-results">
+                                    Nessun risultato trovato
+                                </div>
+                            `;
+
+                            return;
+                        }
+
+                        data.results
+                            .slice(0, 5)
+                            .forEach(
+                                movie => {
+
+                                    const item =
+                                        document.createElement(
+                                            'button'
+                                        );
+
+                                    item.type =
+                                        'button';
+
+                                    item.dataset.id =
+                                        movie.id;
+
+                                    item.textContent =
+                                        movie.title;
+
+                                    searchResults
+                                        .appendChild(
+                                            item
+                                        );
+                                }
+                            );
+
+                    } catch (error) {
+
+                        console.error(error);
                     }
 
-                    data.results
-                        .slice(0, 5)
-                        .forEach(movie => {
-
-                            const item =
-                                document.createElement('button');
-
-                            item.type = 'button';
-                            item.dataset.id = movie.id;
-                            item.textContent = movie.title;
-
-                            searchResults.appendChild(item);
-                        });
-
-                } catch (error) {
-
-                    console.error(error);
-                }
-
-            },
-            300
-        );
+                },
+                300
+            );
     }
 );
 
@@ -581,13 +886,17 @@ searchInput.addEventListener(
     event => {
 
         const items =
-            searchResults.querySelectorAll('button');
+            searchResults.querySelectorAll(
+                'button'
+            );
 
         if (!items.length) {
             return;
         }
 
-        if (event.key === 'ArrowDown') {
+        if (
+            event.key === 'ArrowDown'
+        ) {
 
             event.preventDefault();
 
@@ -602,7 +911,9 @@ searchResults.addEventListener(
     event => {
 
         const items =
-            searchResults.querySelectorAll('button');
+            searchResults.querySelectorAll(
+                'button'
+            );
 
         const currentIndex =
             [...items].indexOf(
@@ -613,7 +924,9 @@ searchResults.addEventListener(
             return;
         }
 
-        if (event.key === 'ArrowDown') {
+        if (
+            event.key === 'ArrowDown'
+        ) {
 
             event.preventDefault();
 
@@ -625,7 +938,9 @@ searchResults.addEventListener(
             items[nextIndex].focus();
         }
 
-        if (event.key === 'ArrowUp') {
+        if (
+            event.key === 'ArrowUp'
+        ) {
 
             event.preventDefault();
 
@@ -648,20 +963,28 @@ searchResults.addEventListener(
     'click',
     async event => {
 
-        if (!event.target.matches('button[data-id]')) {
+        if (
+            !event.target.matches(
+                'button[data-id]'
+            )
+        ) {
             return;
         }
 
-        const id = event.target.dataset.id;
+        const id =
+            event.target.dataset.id;
 
         try {
 
             const movie =
                 await getMovieDetails(id);
 
-            showMovieDetail(movie);
+            showMovieDetail(
+                movie,
+                false
+            );
 
-            searchResults.innerHTML = '';
+            closeSearchSuggestions();
             searchInput.value = '';
 
         } catch (error) {
@@ -676,11 +999,21 @@ searchResults.addEventListener(
 // DETTAGLIO FILM
 // ============================================================
 
-function renderMovieDetail(movie, fromCollection = false) {
+function renderMovieDetail(
+    movie,
+    fromCollection = false
+) {
 
-    console.log('[FE SERVICE] MOVIE ID', movie.id);
+    const collection =
+        getCollection();
 
-    const collection = getCollection();
+    // Recupera l'eventuale
+    // valutazione personale
+    const ratings =
+        getRatings();
+
+    const personalRating =
+        ratings[movie.id] ?? '';
 
     const alreadyInCollection =
         collection.some(
@@ -693,7 +1026,11 @@ function renderMovieDetail(movie, fromCollection = false) {
             type="button"
             id="back-to-detail"
         >
-            ${fromCollection ? '← Torna alla collezione' : '← Torna ai film'}
+            ${
+                fromCollection
+                    ? '← Torna alla collezione'
+                    : '← Torna ai film'
+            }
         </button>
 
         <article class="movie-detail">
@@ -746,6 +1083,48 @@ function renderMovieDetail(movie, fromCollection = false) {
                     ${movie.voteCount ?? 'N/D'}
                 </p>
 
+                <!-- Valutazione personale -->
+
+                <div class="personal-rating">
+
+                    <label
+                        for="personal-rating-input"
+                    >
+                        <strong>
+                            La mia valutazione:
+                        </strong>
+                    </label>
+
+                    <input
+                        type="number"
+                        id="personal-rating-input"
+                        min="1"
+                        max="10"
+                        step="1"
+                        value="${personalRating}"
+                        placeholder="1-10"
+                    >
+                    <button
+                        type="button"
+                        id="save-personal-rating"
+                        ${personalRating === ''
+                            ? ''
+                            : 'disabled'}
+                    >
+                        Salva
+                    </button>
+                    <button
+                        type="button"
+                        id="remove-personal-rating"
+                        ${personalRating === ''
+                            ? 'disabled'
+                            : ''}
+                    >
+                        Rimuovi
+                    </button>
+
+                </div>
+
                 <p>
                     <strong>Lingua originale:</strong>
                     ${movie.originalLanguage || 'N/D'}
@@ -761,7 +1140,9 @@ function renderMovieDetail(movie, fromCollection = false) {
                     ${
                         movie.genres?.length
                             ? movie.genres
-                                .map(genre => genre.name)
+                                .map(
+                                    genre => genre.name
+                                )
                                 .join(', ')
                             : 'N/D'
                     }
@@ -770,7 +1151,9 @@ function renderMovieDetail(movie, fromCollection = false) {
                 <button
                     type="button"
                     id="add-to-collection"
-                    ${alreadyInCollection ? 'disabled' : ''}
+                    ${alreadyInCollection
+                        ? 'disabled'
+                        : ''}
                 >
                     ${
                         alreadyInCollection
@@ -784,31 +1167,131 @@ function renderMovieDetail(movie, fromCollection = false) {
         </article>
     `;
 
-    const backButton = 
-        document.getElementById('back-to-detail');
+
+    // ========================================================
+    // ELEMENTI DEL DETTAGLIO
+    // ========================================================
+
+    const backButton =
+        document.getElementById(
+            'back-to-detail'
+        );
 
     const addButton =
-        document.getElementById('add-to-collection');
+        document.getElementById(
+            'add-to-collection'
+        );
+
+    const ratingInput =
+        document.getElementById(
+            'personal-rating-input'
+        );
+
+    const saveRatingButton =
+        document.getElementById(
+            'save-personal-rating'
+        );
+
+    const removeRatingButton =
+        document.getElementById(
+            'remove-personal-rating'
+        );
 
 
-    backButton.addEventListener('click', () => {
-        if (fromCollection) {
-            showCollection();
-        } else {
-            showMovies();
+    // ========================================================
+    // TORNA INDIETRO
+    // ========================================================
+
+    backButton.addEventListener(
+        'click',
+        () => {
+
+            if (fromCollection) {
+
+                showCollection();
+
+            } else {
+
+                showMovies();
+            }
         }
-    });
+    );
+
+
+    // ========================================================
+    // AGGIUNGI ALLA COLLEZIONE
+    // ========================================================
 
     addButton.addEventListener(
         'click',
         () => {
 
-            addToCollection(movie);
+            addToCollection(
+                movie
+            );
 
             addButton.textContent =
                 '✓ Nella collezione';
 
-            addButton.disabled = true;
+            addButton.disabled =
+                true;
+        }
+    );
+
+
+    // ========================================================
+    // SALVA VALUTAZIONE PERSONALE
+    // ========================================================
+
+    saveRatingButton.addEventListener(
+        'click',
+        () => {
+
+            const rating =
+                Number(
+                    ratingInput.value
+                );
+
+            if (
+                !Number.isInteger(rating) ||
+                rating < 1 ||
+                rating > 10
+            ) {
+
+                alert(
+                    'Inserisci un voto da 1 a 10.'
+                );
+
+                return;
+            }
+
+            setRating(
+                movie.id,
+                rating
+            );
+            saveRatingButton.disabled = true;
+            removeRatingButton.disabled = false;
+        }
+    );
+
+
+    // ========================================================
+    // RIMUOVI VALUTAZIONE PERSONALE
+    // ========================================================
+
+    removeRatingButton.addEventListener(
+        'click',
+        () => {
+
+            removeRating(
+                movie.id
+            );
+
+            ratingInput.value =
+                '';
+            
+            saveRatingButton.disabled = false;
+            removeRatingButton.disabled = true;
         }
     );
 }
@@ -818,52 +1301,73 @@ function renderMovieDetail(movie, fromCollection = false) {
 // MOSTRA DETTAGLIO
 // ============================================================
 
-function showMovieDetail(movie, fromCollection = false) {
+function showMovieDetail(
+    movie,
+    fromCollection = false
+) {
+
     moviesSection.style.display = 'none';
     collectionSection.style.display = 'none';
     movieDetail.style.display = 'block';
+    pagination.style.display = 'none';
 
-    renderMovieDetail(movie, fromCollection);
+    closeSearchSuggestions();
+    closeFilterPanel();
+
+    renderMovieDetail(
+        movie,
+        fromCollection
+    );
 }
+
 
 // ============================================================
 // MOSTRA LISTA FILM
 // ============================================================
 
 function showMovies() {
+
     movieDetail.style.display = 'none';
     collectionSection.style.display = 'none';
-
     moviesSection.style.display = 'block';
     moviesContainer.style.display = 'grid';
-    pagination.style.display = 'flex';
+
+    closeFilterPanel();
+
+    pagination.style.display =
+        totalPages > 1 ? 'flex' : 'none';
 }
+
 
 // ============================================================
 // APERTURA DETTAGLIO
 // ============================================================
 
-async function openMovieDetail(event, fromCollection) {
+async function openMovieDetail(
+    event,
+    fromCollection
+) {
 
-    if (!event.target.matches('button[data-id]')) {
+    if (
+        !event.target.matches(
+            'button[data-id]'
+        )
+    ) {
         return;
     }
 
-    const id = event.target.dataset.id;
+    const id =
+        event.target.dataset.id;
 
     try {
-
-        console.log('[FE] Click Dettagli');
 
         const movie =
             await getMovieDetails(id);
 
-        console.log(movie);
-
-        const fromCollection =
-            event.currentTarget === collectionContainer;
-
-        showMovieDetail(movie, fromCollection);
+        showMovieDetail(
+            movie,
+            fromCollection
+        );
 
     } catch (error) {
 
@@ -879,18 +1383,18 @@ async function openMovieDetail(event, fromCollection) {
 function showCollection() {
 
     moviesSection.style.display = 'none';
-
     movieDetail.style.display = 'none';
-
     collectionSection.style.display = 'block';
-
-    // La paginazione appartiene alla lista dei film,
-    // quindi nella collezione viene nascosta.
     pagination.style.display = 'none';
 
-    const collection = getCollection();
+    closeSearchSuggestions();
+    closeFilterPanel();
 
-    collectionContainer.innerHTML = '';
+    const collection =
+        getCollection();
+
+    collectionContainer.innerHTML =
+        '';
 
     if (collection.length === 0) {
 
@@ -903,15 +1407,20 @@ function showCollection() {
         return;
     }
 
-    collection.forEach(movie => {
+    collection.forEach(
+        movie => {
 
-        const card =
-            renderCollectionCard(movie);
+            const card =
+                renderCollectionCard(
+                    movie
+                );
 
-        collectionContainer.appendChild(card);
-    });
+            collectionContainer.appendChild(
+                card
+            );
+        }
+    );
 }
-
 
 
 // ============================================================
@@ -920,7 +1429,8 @@ function showCollection() {
 
 function renderCollectionCard(movie) {
 
-    const card = document.createElement('article');
+    const card =
+        document.createElement('article');
 
     card.classList.add(
         'movie-card',
@@ -958,7 +1468,8 @@ function renderCollectionCard(movie) {
             </h3>
 
             <p>
-                Data: ${movie.releaseDate || 'N/D'}
+                Data:
+                ${movie.releaseDate || 'N/D'}
             </p>
 
             <p>
@@ -966,7 +1477,10 @@ function renderCollectionCard(movie) {
             </p>
 
             <p class="collection-overview">
-                ${movie.overview || 'Descrizione non disponibile.'}
+                ${
+                    movie.overview ||
+                    'Descrizione non disponibile.'
+                }
             </p>
 
             <div class="collection-actions">
@@ -991,17 +1505,22 @@ function renderCollectionCard(movie) {
     `;
 
     const removeButton =
-        card.querySelector('.remove-from-collection');
+        card.querySelector(
+            '.remove-from-collection'
+        );
 
     removeButton.addEventListener(
         'click',
         event => {
 
-            // Evita che il click venga interpretato
-            // come apertura del dettaglio.
+            // Evita che il click venga
+            // interpretato come apertura
+            // del dettaglio.
             event.stopPropagation();
 
-            removeFromCollection(movie.id);
+            removeFromCollection(
+                movie.id
+            );
 
             showCollection();
         }
@@ -1011,9 +1530,9 @@ function renderCollectionCard(movie) {
 }
 
 
-
 // ============================================================
 // AVVIO APPLICAZIONE
 // ============================================================
 
 loadMoviesPage();
+
